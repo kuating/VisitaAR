@@ -86,8 +86,8 @@ public class VideoLoader : MonoBehaviour
         for (int i = 0; i < mBundle.GetAllAssetNames().Length; i++)
         {
             Debug.Log((i+1) + " : " + mBundle.GetAllAssetNames()[i]);
-            var newFileSelect = Instantiate(selectPrefab, scrollContent.transform);
-            newFileSelect.GetComponent<RectTransform>().localPosition = new Vector3(0, scrollContent.GetComponent<RectTransform>().sizeDelta.y - 45 - (100 * i), 0);
+            GameObject newFileSelect = Instantiate(selectPrefab, scrollContent.transform);
+            newFileSelect.GetComponent<RectTransform>().localPosition = new Vector2(0,  - 45 - (100 * i));
 
             string[] temp = mBundle.GetAllAssetNames()[i].Split('/');
             //for (int j = 0; j < temp.Length; j++) { Debug.Log(temp[j]); }

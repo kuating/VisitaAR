@@ -55,6 +55,7 @@ public class VuforiaCamera : MonoBehaviour
     {
         if (isDetecting)
         {
+            Debug.Log("camera init = " + cameraInitialized + " and is decoding = " + isDecoding);
             if (cameraInitialized && !isDecoding)
             {
                 try
@@ -63,7 +64,7 @@ public class VuforiaCamera : MonoBehaviour
 
                     if (cameraFeed == null)
                     {
-                        Debug.Log(cameraFeed = null);
+                        Debug.Log("cameraFeed = null");
                         return;
                     }
                     ThreadPool.QueueUserWorkItem(new WaitCallback(DecodeQr), cameraFeed);
@@ -80,7 +81,10 @@ public class VuforiaCamera : MonoBehaviour
     private void DecodeQr(object state){
         isDecoding = true;
         var cameraFeed = (Image)state;
+        Debug.Log("a");
+        if (barCodeReader.Decode(cameraFeed.Pixels, cameraFeed.BufferWidth, cameraFeed.BufferHeight, RGBLuminanceSource.BitmapFormat.RGB24) == null) ;
         var data = barCodeReader.Decode(cameraFeed.Pixels, cameraFeed.BufferWidth, cameraFeed.BufferHeight, RGBLuminanceSource.BitmapFormat.RGB24);
+        Debug.Log("b");
         if (data != null)
         {
             // QRCode detected.
@@ -95,6 +99,8 @@ public class VuforiaCamera : MonoBehaviour
             isDecoding = false;
             Debug.Log("No QR code detected !");
         }
+        Debug.Log("c");
+
     }
 
     public void DetectQrCode()

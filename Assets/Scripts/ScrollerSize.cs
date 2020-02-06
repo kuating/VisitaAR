@@ -20,7 +20,7 @@ public class ScrollerSize : MonoBehaviour
             if (this.lineCount > 5)
             {
                 this.GetComponent<RectTransform>().sizeDelta = new Vector2(100, lineCount * 100 - 10);
-                this.GetComponent<RectTransform>().localPosition = new Vector2(this.GetComponent<RectTransform>().localPosition.x, -100 * (lineCount - 5));
+                //this.GetComponent<RectTransform>().localPosition = new Vector2(this.GetComponent<RectTransform>().localPosition.x, -100 * (lineCount - 5));
             }
             else this.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 5 * 100 - 10);
         }
