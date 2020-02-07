@@ -21,6 +21,8 @@ public class VuforiaCamera : MonoBehaviour
 
     public string url;
 
+    private int frameCounter = 0;
+    private int timeoutFrameLimit = 250;
     private bool cameraInitialized;
     public bool isDetecting = false;
 
@@ -56,8 +58,15 @@ public class VuforiaCamera : MonoBehaviour
         if (isDetecting)
         {
             Debug.Log("camera init = " + cameraInitialized + " and is decoding = " + isDecoding);
+            if (cameraInitialized && isDecoding) {
+
+                frameCounter++;
+                
+                if (frameCounter > timeoutFrameLimit) { Debug.LogError("Detecting Timeout"); frameCounter = 0; isDecoding = false; }
+            }
             if (cameraInitialized && !isDecoding)
             {
+                frameCounter = 0;
                 try
                 {
                     var cameraFeed = CameraDevice.Instance.GetCameraImage(PIXEL_FORMAT.GRAYSCALE);
@@ -82,8 +91,14 @@ public class VuforiaCamera : MonoBehaviour
         isDecoding = true;
         var cameraFeed = (Image)state;
         Debug.Log("a");
-        if (barCodeReader.Decode(cameraFeed.Pixels, cameraFeed.BufferWidth, cameraFeed.BufferHeight, RGBLuminanceSource.BitmapFormat.RGB24) == null) ;
-        var data = barCodeReader.Decode(cameraFeed.Pixels, cameraFeed.BufferWidth, cameraFeed.BufferHeight, RGBLuminanceSource.BitmapFormat.RGB24);
+
+        Result data = null;
+        if (barCodeReader.Decode(cameraFeed.Pixels, cameraFeed.BufferWidth, cameraFeed.BufferHeight, RGBLuminanceSource.BitmapFormat.Gray16/**/) != null)
+        {
+            Debug.Log("entrei aqui");
+            data = barCodeReader.Decode(cameraFeed.Pixels, cameraFeed.BufferWidth, cameraFeed.BufferHeight, RGBLuminanceSource.BitmapFormat.Gray16);
+        }
+
         Debug.Log("b");
         if (data != null)
         {

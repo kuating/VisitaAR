@@ -9,7 +9,7 @@ public class ScrollerSize : MonoBehaviour
 
     private void Awake()
     {
-        this.GetComponent<RectTransform>().sizeDelta = new Vector2(100,5*100 - 10);
+        this.GetComponent<RectTransform>().offsetMin = new Vector2(this.GetComponent<RectTransform>().offsetMin.x, 20);
     }
 
     void Update()
@@ -17,12 +17,14 @@ public class ScrollerSize : MonoBehaviour
         if (lineCount != this.transform.childCount)
         {
             lineCount = this.transform.childCount;
-            if (this.lineCount > 5)
+            if (this.lineCount * 100 - 10 > this.GetComponentInParent<RectTransform>().rect.height-40)
             {
-                this.GetComponent<RectTransform>().sizeDelta = new Vector2(100, lineCount * 100 - 10);
+                this.GetComponent<RectTransform>().offsetMin = new Vector2(this.GetComponent<RectTransform>().offsetMin.x,
+                   20 -((this.lineCount * 100 - 10) - (this.GetComponentInParent<RectTransform>().rect.height - 40)));
+                //this.GetComponent<RectTransform>().sizeDelta = new Vector2(100, lineCount * 100 - 10);
                 //this.GetComponent<RectTransform>().localPosition = new Vector2(this.GetComponent<RectTransform>().localPosition.x, -100 * (lineCount - 5));
             }
-            else this.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 5 * 100 - 10);
+            else this.GetComponent<RectTransform>().offsetMin = new Vector2(this.GetComponent<RectTransform>().offsetMin.x, 20);
         }
     }
 
