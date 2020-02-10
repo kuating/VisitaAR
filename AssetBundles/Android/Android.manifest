@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 3768201347
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: bundle2
+      Dependencies: {}
+    Info_1:
+      Name: bundleandroid
+      Dependencies: {}

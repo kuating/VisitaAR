@@ -64,6 +64,7 @@ public class VideoLoader : MonoBehaviour
     {
         if (loadedUrls.ContainsKey(mUrl))
         {
+            Debug.Log("Ja contem a url " + mUrl);
             mBundle = loadedUrls[mUrl];
             loadScreen.SetActive(false);
         }
@@ -73,6 +74,7 @@ public class VideoLoader : MonoBehaviour
 
             if (!mBundle)
             {
+                Debug.Log("A url " + mUrl + " tem um mBundle nulo");
                 Debug.Log("Falha no Download do Bundle");
                 errorScreen.SetActive(true);
                 yield break;
@@ -134,8 +136,11 @@ public class VideoLoader : MonoBehaviour
         loadScreen.SetActive(false);
 
         if (request.isNetworkError || request.isHttpError)
+        {
             Debug.Log(request.error);
-         
+            mBundle = null;
+        }
+
         else
         {
             mBundle = ((DownloadHandlerAssetBundle)request.downloadHandler).assetBundle;
