@@ -22,7 +22,7 @@ public class VideoLoader : MonoBehaviour
     private double progressCheck;
     private int frameCounter;
     private int timeoutFrameLimit = 500;
-    private Dictionary<string,AssetBundle> loadedUrls;
+    private Dictionary<string,string> loadedUrls;
 
     [SerializeField]
     private Image mDisk = null;
@@ -38,6 +38,8 @@ public class VideoLoader : MonoBehaviour
     private GameObject errorScreen = null;
     private Display display;
 
+    private UnityWebRequest request = null;
+
 
     void Awake()
     {
@@ -45,7 +47,7 @@ public class VideoLoader : MonoBehaviour
         mVideoPlayer = GetComponent<VideoPlayer>();
         Caching.compressionEnabled = false;
         if (mClearChache) Caching.ClearCache();
-        loadedUrls = new Dictionary<string, AssetBundle>();
+        loadedUrls = new Dictionary<string, string>();
     }
 
     void Update()
@@ -62,10 +64,12 @@ public class VideoLoader : MonoBehaviour
 
     private IEnumerator DownloadAndPlay()
     {
-        if (loadedUrls.ContainsKey(mUrl))
+        if (loadedUrls.ContainsKey(mUrl.Split('=')[2]))
         {
-            Debug.Log("Ja contem a url " + mUrl);
-            mBundle = loadedUrls[mUrl];
+            Debug.Log(mUrl.Split('=')[2]);
+            Debug.Log("Ja contem a url " + mUrl.Split('=')[2]);
+
+            mBundle = AssetBundle.LoadFromFile(loadedUrls[mUrl.Split('=')[2]]);
             loadScreen.SetActive(false);
         }
         else
@@ -79,7 +83,8 @@ public class VideoLoader : MonoBehaviour
                 errorScreen.SetActive(true);
                 yield break;
             }
-            loadedUrls.Add(mUrl, mBundle);
+            SaveToFolder(request, mUrl.Split('=')[2]);
+            //loadedUrls.Add(mUrl.Split('=')[2], mBundle);
         }
 
         
@@ -114,7 +119,7 @@ public class VideoLoader : MonoBehaviour
     private IEnumerator GetBundle()
     {
         //WWW request = WWW.LoadFromCacheOrDownload(mUrl, 0);
-        UnityWebRequest request = UnityWebRequestAssetBundle.GetAssetBundle(mUrl);
+        /*UnityWebRequest*/ request = UnityWebRequestAssetBundle.GetAssetBundle(mUrl);
         Debug.Log("Download Started");
         /*yield return*/ request.SendWebRequest();
         Debug.Log("Download Ended");
@@ -153,4 +158,37 @@ public class VideoLoader : MonoBehaviour
     public void ClearCache() {
         Caching.ClearCache();
     }
+
+    private void SaveToFolder(UnityWebRequest request, string bundleName)
+    {
+        string cachedAssetBundle = Application.persistentDataPath + "/" + bundleName + ".assetbundle";
+        loadedUrls.Add(bundleName, cachedAssetBundle);
+        System.IO.FileStream cache = new System.IO.FileStream(cachedAssetBundle, System.IO.FileMode.Create);
+        cache.Write(request.downloadHandler.data, 0, request.downloadHandler.data.Length);
+        cache.Close();
+        //iOS.Device.SetNoBackupFlag(cachedAssetBundle);
+
+        Debug.Log("Cache saved: " + cachedAssetBundle);
+    }
 }
+
+/*
+ UnityWebRequest www = UnityWebRequest.Get(bundleURL + ".manifest");
+
+// create empty hash string
+Hash128 hashString = (default(Hash128));
+     
+     if (www.downloadHandler.text.Contains ("ManifestFileVersion"))  {
+     var hashRow = www.downloadHandler.text.ToString().Split("\n".ToCharArray())[5];
+hashString = Hash128.Parse(hashRow.Split (':') [1].Trim());
+     
+     if (hashString.isValid == true) {
+     if (Caching.IsVersionCached (bundleURL, hashString) == true) {
+     Debug.Log("Bundle with this hash is already cached!... " + hashString);
+     } else {
+     string writepath = Application.persistentDataPath + "/" + hashString;
+www.downloadHandler = new CustomAssetBundleDownloadHandler(writepath);
+Debug.Log("No cached version founded for this hash.." + hashString);
+     }
+
+*/
