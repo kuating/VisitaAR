@@ -120,13 +120,16 @@ public class VideoLoader : MonoBehaviour
     {
         //WWW request = WWW.LoadFromCacheOrDownload(mUrl, 0);
         /*UnityWebRequest*/ request = UnityWebRequestAssetBundle.GetAssetBundle(mUrl);
-        Debug.Log("Download Started");
+        request.downloadHandler = new CustomAssetBundleDownloadHandler(Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle");
+        request.chunkedTransfer = false;
+        Debug.Log("Download Queued");
         /*yield return*/ request.SendWebRequest();
-        Debug.Log("Download Ended");
+        Debug.Log("Download Started");
         progressCheck = 0; frameCounter = 0;
         while (!request.isDone)
         {
-            Debug.Log(request.downloadedBytes);
+            Debug.Log(request.GetResponseHeaders());
+            //Debug.Log(((CustomAssetBundleDownloadHandler)request.downloadHandler).ShowProgress());
             mLoadFill = request.downloadProgress;
             if (request.downloadedBytes == progressCheck) frameCounter++;
             else frameCounter = 0;
@@ -136,7 +139,7 @@ public class VideoLoader : MonoBehaviour
 
             yield return null;
         }
-
+        Debug.Log("Download Ended");
         mLoadFill = 0f;
         loadScreen.SetActive(false);
 
@@ -148,7 +151,7 @@ public class VideoLoader : MonoBehaviour
 
         else
         {
-            mBundle = ((DownloadHandlerAssetBundle)request.downloadHandler).assetBundle;
+            mBundle = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle"); //((DownloadHandlerAssetBundle)request.downloadHandler).assetBundle;
             //Debug.Log("Download sucedido");
         } 
 
@@ -163,9 +166,10 @@ public class VideoLoader : MonoBehaviour
     {
         string cachedAssetBundle = Application.persistentDataPath + "/" + bundleName + ".assetbundle";
         loadedUrls.Add(bundleName, cachedAssetBundle);
-        System.IO.FileStream cache = new System.IO.FileStream(cachedAssetBundle, System.IO.FileMode.Create);
-        cache.Write(request.downloadHandler.data, 0, request.downloadHandler.data.Length);
-        cache.Close();
+        //request.downloadHandler = new CustomAssetBundleDownloadHandler(cachedAssetBundle);
+        //System.IO.FileStream cache = new System.IO.FileStream(cachedAssetBundle, System.IO.FileMode.Create);
+        //cache.Write(request.downloadHandler.data, 0, request.downloadHandler.data.Length);
+        //cache.Close();
         //iOS.Device.SetNoBackupFlag(cachedAssetBundle);
 
         Debug.Log("Cache saved: " + cachedAssetBundle);
@@ -190,5 +194,4 @@ hashString = Hash128.Parse(hashRow.Split (':') [1].Trim());
 www.downloadHandler = new CustomAssetBundleDownloadHandler(writepath);
 Debug.Log("No cached version founded for this hash.." + hashString);
      }
-
-*/
+    */
