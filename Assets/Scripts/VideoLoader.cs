@@ -25,7 +25,11 @@ public class VideoLoader : MonoBehaviour
     private Dictionary<string,string> loadedUrls;
 
     [SerializeField]
+    private VideoClip defaultClip = null;
+    [SerializeField]
     private Image mDisk = null;
+    [SerializeField]
+    private TextMeshProUGUI mMbText = null;
     private VideoPlayer mVideoPlayer = null;
     private AssetBundle mBundle = null;
     [SerializeField]
@@ -70,6 +74,12 @@ public class VideoLoader : MonoBehaviour
             Debug.Log("Ja contem a url " + mUrl.Split('=')[2]);
 
             mBundle = AssetBundle.LoadFromFile(loadedUrls[mUrl.Split('=')[2]]);
+            loadScreen.SetActive(false);
+        }
+        else if(mBundle = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle"))
+        {
+            Debug.Log(mUrl.Split('=')[2]);
+            Debug.Log("Ja contem a url " + mUrl.Split('=')[2]);
             loadScreen.SetActive(false);
         }
         else
@@ -128,9 +138,13 @@ public class VideoLoader : MonoBehaviour
         progressCheck = 0; frameCounter = 0;
         while (!request.isDone)
         {
-            Debug.Log(request.GetResponseHeaders());
             //Debug.Log(((CustomAssetBundleDownloadHandler)request.downloadHandler).ShowProgress());
-            mLoadFill = request.downloadProgress;
+            /* NOT WORKING
+            /* Debug.Log(request.GetResponseHeader("Content-Lenght"));
+            /* mLoadFill = request.downloadProgress;
+            */
+            mMbText.text = System.Math.Round((double)request.downloadedBytes/1000000, 2) + "Mb";
+
             if (request.downloadedBytes == progressCheck) frameCounter++;
             else frameCounter = 0;
             progressCheck = request.downloadedBytes;
@@ -173,6 +187,12 @@ public class VideoLoader : MonoBehaviour
         //iOS.Device.SetNoBackupFlag(cachedAssetBundle);
 
         Debug.Log("Cache saved: " + cachedAssetBundle);
+    }
+
+    public void SetClipToNull()
+    {
+        mVideoPlayer.Stop();
+        mVideoPlayer.clip = defaultClip;
     }
 }
 

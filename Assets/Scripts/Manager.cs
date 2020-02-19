@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class Manager : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class Manager : MonoBehaviour
     private VuforiaCamera vuforiaCamera;
     [SerializeField]
     private VideoLoader videoLoader;
+    [SerializeField]
+    private VideoPlayer videoPlayer;
+
     private bool gambiarra = false;
 
     // Start is called before the first frame update
@@ -27,11 +31,11 @@ public class Manager : MonoBehaviour
     {
         if (currentScreen <= 2)
         {
-            //if (vuforiaCard) { vuforiaCard = false; imageTarget.SetActive(false); }
+            if (vuforiaCard) { vuforiaCard = false; videoPlayer.enabled = false; }
         }
         else
         {
-            //if (!vuforiaCard) { vuforiaCard = true; imageTarget.SetActive(true); }
+            if (!vuforiaCard) { vuforiaCard = true; videoPlayer.enabled = true; }
         }
 
         if (currentScreen == 1)

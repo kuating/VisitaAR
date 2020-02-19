@@ -29,11 +29,12 @@ public class CustomAssetBundleDownloadHandler : DownloadHandlerScript
          return true;
      }
 
+#pragma warning disable CS0672 // O membro substitui o membro obsoleto
     protected override void ReceiveContentLength(int contentLength)
     {
-        Debug.LogError("ReceiveContentLength: " + contentLength);
+#pragma warning restore CS0672 // O membro substitui o membro obsoleto
+        Debug.Log(string.Format("LoggingDownloadHandler :: ReceiveContentLength - length {0}", contentLength));
     }
-
     protected override void CompleteContent()
      {
          // close and save
