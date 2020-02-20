@@ -137,7 +137,12 @@ public class VideoLoader : MonoBehaviour
     {
         //WWW request = WWW.LoadFromCacheOrDownload(mUrl, 0);
         /*UnityWebRequest*/ request = UnityWebRequestAssetBundle.GetAssetBundle(mUrl);
-        request.downloadHandler = new CustomAssetBundleDownloadHandler(Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle");
+        string tempPath = Application.persistentDataPath + "/" + "DownloadTemp";
+        if (!Directory.Exists(tempPath))
+        {
+            Directory.CreateDirectory(tempPath);
+        }
+        request.downloadHandler = new CustomAssetBundleDownloadHandler(tempPath + "/" + mUrl.Split('=')[2] + ".assetbundle");
         request.chunkedTransfer = false;
         Debug.Log("Download Queued");
         /*yield return*/ request.SendWebRequest();
@@ -150,7 +155,7 @@ public class VideoLoader : MonoBehaviour
             /* Debug.Log(request.GetResponseHeader("Content-Lenght"));
             /* mLoadFill = request.downloadProgress;
             */
-            mMbText.text = System.Math.Round((double)request.downloadedBytes/1000000, 2) + "Mb";
+            mMbText.text = System.Math.Round((double)request.downloadedBytes/1000000, 2) + " Mb";
 
             if (request.downloadedBytes == progressCheck) frameCounter++;
             else frameCounter = 0;
@@ -168,12 +173,13 @@ public class VideoLoader : MonoBehaviour
         {
             Debug.Log(request.error);
             mBundle = null;
+            File.Delete(tempPath + "/" + mUrl.Split('=')[2] + ".assetbundle");
         }
 
         else
         {
             Debug.Log(mBundle);
-            if(!mBundle)
+            if(mBundle) File.Move(tempPath + "/" + mUrl.Split('=')[2] + ".assetbundle", Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle")
             mBundle = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle"); //((DownloadHandlerAssetBundle)request.downloadHandler).assetBundle;
             //Debug.Log("Download sucedido");
         } 
