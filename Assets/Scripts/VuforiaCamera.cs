@@ -22,7 +22,7 @@ public class VuforiaCamera : MonoBehaviour
     public string url;
 
     private int frameCounter = 0;
-    private int timeoutFrameLimit = 200;
+    private int timeoutFrameLimit = 150;
     private bool cameraInitialized;
     public bool isDetecting = false;
 

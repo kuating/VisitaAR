@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Video;
 using UnityEngine.UI;
@@ -64,6 +65,12 @@ public class VideoLoader : MonoBehaviour
     {
         loadScreen.SetActive(true);
         StartCoroutine(DownloadAndPlay());
+    }
+
+    public void UpdateAndConfigure()
+    {
+        loadScreen.SetActive(true);
+        StartCoroutine(UpdateAndPlay());
     }
 
     private IEnumerator DownloadAndPlay()
@@ -165,6 +172,8 @@ public class VideoLoader : MonoBehaviour
 
         else
         {
+            Debug.Log(mBundle);
+            if(!mBundle)
             mBundle = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle"); //((DownloadHandlerAssetBundle)request.downloadHandler).assetBundle;
             //Debug.Log("Download sucedido");
         } 
@@ -193,6 +202,38 @@ public class VideoLoader : MonoBehaviour
     {
         mVideoPlayer.Stop();
         mVideoPlayer.clip = defaultClip;
+    }
+
+    private IEnumerator UpdateAndPlay()
+    {
+
+        yield return GetBundle();
+
+        if (!mBundle)
+        {
+            Debug.Log("A url " + mUrl + " tem um mBundle nulo");
+            Debug.Log("Falha no Download do Bundle");
+            errorScreen.SetActive(true);
+            yield break;
+        }
+        SaveToFolder(request, mUrl.Split('=')[2]);
+
+        display.fileInfos = new FileSelectInfo[mBundle.GetAllAssetNames().Length];
+
+        for (int i = 0; i < mBundle.GetAllAssetNames().Length; i++)
+        {
+            Debug.Log((i + 1) + " : " + mBundle.GetAllAssetNames()[i]);
+            GameObject newFileSelect = Instantiate(selectPrefab, scrollContent.transform);
+            newFileSelect.GetComponent<RectTransform>().localPosition = new Vector2(0, -45 - (100 * i));
+
+            string[] temp = mBundle.GetAllAssetNames()[i].Split('/');
+            newFileSelect.GetComponentInChildren<Button>().transform.GetComponentInChildren<TextMeshProUGUI>().text = temp[temp.Length - 1].Split('.')[0];
+            newFileSelect.GetComponent<FileSelectInfo>().videoName = temp[temp.Length - 1].Split('.')[0];
+            newFileSelect.GetComponent<FileSelectInfo>().videoIndex = i;
+            newFileSelect.GetComponent<FileSelectInfo>().videoClip = mBundle.LoadAsset<VideoClip>(mBundle.GetAllAssetNames()[i]);
+
+            display.fileInfos[i] = newFileSelect.GetComponent<FileSelectInfo>();
+        }
     }
 }
 
