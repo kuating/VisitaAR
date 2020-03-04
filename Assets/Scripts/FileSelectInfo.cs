@@ -26,6 +26,6 @@ public class FileSelectInfo : MonoBehaviour
         display.GetComponent<Display>().currentIndex = videoIndex;
         videoPlayer.clip = videoClip;
         manager.ChangeScreen(3);
-        videoPlayer.Play();
+        videoPlayer.Stop();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -23,7 +24,11 @@ public class Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        string tempPath = Application.persistentDataPath + "/" + "DownloadTemp";
+        if (Directory.Exists(tempPath))
+        {
+            Directory.Delete(tempPath);
+        }
     }
 
     // Update is called once per frame

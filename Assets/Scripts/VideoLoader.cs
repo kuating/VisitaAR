@@ -22,8 +22,8 @@ public class VideoLoader : MonoBehaviour
     private float mLoadFill = 0f;
     private double progressCheck;
     private int frameCounter;
-    private int timeoutFrameLimit = 500;
-    private Dictionary<string,string> loadedUrls;
+    private int timeoutFrameLimit = 1000;
+   // private Dictionary<string,string> loadedUrls;
 
     [SerializeField]
     private VideoClip defaultClip = null;
@@ -52,7 +52,7 @@ public class VideoLoader : MonoBehaviour
         mVideoPlayer = GetComponent<VideoPlayer>();
         Caching.compressionEnabled = false;
         if (mClearChache) Caching.ClearCache();
-        loadedUrls = new Dictionary<string, string>();
+        //loadedUrls = new Dictionary<string, string>();
     }
 
     void Update()
@@ -75,15 +75,19 @@ public class VideoLoader : MonoBehaviour
 
     private IEnumerator DownloadAndPlay()
     {
-        if (loadedUrls.ContainsKey(mUrl.Split('=')[2]))
+        /*if (loadedUrls.ContainsKey(mUrl.Split('=')[2]))
         {
             Debug.Log(mUrl.Split('=')[2]);
             Debug.Log("Ja contem a url " + mUrl.Split('=')[2]);
-
+            if (mBundle != null)
+            {
+                mBundle.Unload(false); //scene is unload from here
+            }
+            while (!Caching.ready) yield return null;
             mBundle = AssetBundle.LoadFromFile(loadedUrls[mUrl.Split('=')[2]]);
             loadScreen.SetActive(false);
         }
-        else if(mBundle = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle"))
+        else */if(mBundle = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle"))
         {
             Debug.Log(mUrl.Split('=')[2]);
             Debug.Log("Ja contem a url " + mUrl.Split('=')[2]);
@@ -179,7 +183,15 @@ public class VideoLoader : MonoBehaviour
         else
         {
             Debug.Log(mBundle);
-            if(mBundle) File.Move(tempPath + "/" + mUrl.Split('=')[2] + ".assetbundle", Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle")
+            File.Delete(Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle");
+            File.Move(tempPath + "/" + mUrl.Split('=')[2] + ".assetbundle", Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle");
+            File.Delete(tempPath + "/" + mUrl.Split('=')[2] + ".assetbundle");
+            if (mBundle) {
+                mBundle.Unload(false); //scene is unload from here
+
+                while (!Caching.ready) /*yield return null*/{ }
+            }
+            AssetBundle.UnloadAllAssetBundles(true);
             mBundle = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle"); //((DownloadHandlerAssetBundle)request.downloadHandler).assetBundle;
             //Debug.Log("Download sucedido");
         } 
@@ -194,7 +206,7 @@ public class VideoLoader : MonoBehaviour
     private void SaveToFolder(UnityWebRequest request, string bundleName)
     {
         string cachedAssetBundle = Application.persistentDataPath + "/" + bundleName + ".assetbundle";
-        loadedUrls.Add(bundleName, cachedAssetBundle);
+        //loadedUrls.Add(bundleName, cachedAssetBundle);
         //request.downloadHandler = new CustomAssetBundleDownloadHandler(cachedAssetBundle);
         //System.IO.FileStream cache = new System.IO.FileStream(cachedAssetBundle, System.IO.FileMode.Create);
         //cache.Write(request.downloadHandler.data, 0, request.downloadHandler.data.Length);
