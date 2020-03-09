@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3879457156
+CRC: 2966113270
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 609f2fa977d5a96f07527f760bb0dc45
+    Hash: eb37a60f7a39d706afd766b29eb43fdd
   TypeTreeHash:
     serializedVersion: 2
     Hash: 9533ec91352ac8573a011616e38420f1
@@ -12,10 +12,5 @@ ClassTypes:
 - Class: 329
   Script: {instanceID: 0}
 Assets:
-- Assets/Media/Sample8.mp4
-- Assets/Media/Sample9.mp4
 - Assets/Gabriel/Card.mp4
-- Assets/Media/Sample5.mp4
-- Assets/Media/Sample7.mp4
-- Assets/Media/Sample6.mp4
 Dependencies: []
