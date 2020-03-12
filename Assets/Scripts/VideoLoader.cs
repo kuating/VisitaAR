@@ -87,7 +87,13 @@ public class VideoLoader : MonoBehaviour
             mBundle = AssetBundle.LoadFromFile(loadedUrls[mUrl.Split('=')[2]]);
             loadScreen.SetActive(false);
         }
-        else */if(mBundle = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle"))
+        else */
+        if (mBundle != null)
+        {
+            mBundle.Unload(false);
+            mBundle = null;
+        }
+        if (mBundle = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + mUrl.Split('=')[2] + ".assetbundle"))
         {
             Debug.Log(mUrl.Split('=')[2]);
             Debug.Log("Ja contem a url " + mUrl.Split('=')[2]);
