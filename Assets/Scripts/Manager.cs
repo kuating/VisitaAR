@@ -69,4 +69,8 @@ public class Manager : MonoBehaviour
         screens[newScreen].SetActive(true);
         currentScreen = newScreen;
     }
+
+    public void OpenSite(){
+        Application.OpenURL("https://lab3d.coppe.ufrj.br/");
+    }
 }
