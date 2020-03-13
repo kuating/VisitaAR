@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 3499894001
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 404f146525396fdf96aaf0e94804265f
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 9533ec91352ac8573a011616e38420f1
+HashAppended: 0
+ClassTypes:
+- Class: 329
+  Script: {instanceID: 0}
+Assets:
+- Assets/Media/Card.mp4
+Dependencies: []

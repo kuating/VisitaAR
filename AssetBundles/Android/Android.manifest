@@ -1,10 +1,10 @@
 ManifestFileVersion: 0
-CRC: 2117110929
+CRC: 2878249175
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
       Name: bundle2
       Dependencies: {}
     Info_1:
-      Name: bundleandroid
+      Name: semana4
       Dependencies: {}
